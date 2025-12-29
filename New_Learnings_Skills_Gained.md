@@ -6,14 +6,15 @@
 
 ## 🛠 Software Engineering & Infrastructure
 
-###  Project & Environment Management
+### 📦 Project & Environment Management
 * **Modern Python Tooling**
     * **uv Project Workflow**: Transitioned to a full project-based workflow using `uv`. By utilizing `pyproject.toml` and lockfiles, I ensured high-performance dependency management and strictly reproducible development environments.
+    * **Pathlib Integration**: Adopted `pathlib` for object-oriented filesystem paths, providing a cleaner and more robust alternative to the legacy `os.path` for better cross-platform compatibility.
 
-###  Code Quality & Static Typing
+### 🛡 Code Quality & Static Typing
 * **Static Analysis Ecosystem**
-    * **Pyright Configuration**: Implemented a `pyrightconfig.json` file to standardize type-checking rules across the project, ensuring consistent error reporting and strict type safety.
     * **Pylance**: Integrated as the core high-performance language server to provide advanced static analysis and intelligent auto-complete.
+    * **Pyright Configuration**: Implemented a `pyrightconfig.json` file to standardize type-checking rules across the project, ensuring consistent error reporting and strict type safety.
     * **pandas-stubs**: Utilized to bring static typing to the Pandas library, allowing for stricter validation of DataFrame operations.
 
 * **Advanced Structural Typing**

@@ -211,3 +211,5 @@ __marimo__/
 
 # Project Specific Data
 data/
+
+models/*.bin
