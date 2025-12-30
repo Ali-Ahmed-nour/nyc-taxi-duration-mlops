@@ -9,23 +9,26 @@
 ### 📦 Project & Environment Management
 * **Modern Python Tooling**
     * **uv Project Workflow**: Transitioned to a full project-based workflow using `uv`. By utilizing `pyproject.toml` and lockfiles, I ensured high-performance dependency management and strictly reproducible development environments.
-    * **Dev-Dependencies Management**: Implemented a clear separation between production and development dependencies, ensuring a lightweight production build by isolating tools like linters and formatters.
-    * **Pathlib Integration**: Adopted `pathlib` for object-oriented filesystem paths, providing a cleaner and more robust alternative to the legacy `os.path`.
+    * **Dev-Dependencies Management**: Implemented a clear separation between production and development dependencies, ensuring a lightweight production build.
+    * **Pathlib Integration**: Adopted `pathlib` for object-oriented filesystem paths, providing a cleaner alternative to the legacy `os.path`.
 
-### 🛡 Code Quality & Automation
-* **CI/CD & Automation**
-    * **Justfile (Just Task Runner)**: Implemented a `justfile` to orchestrate project tasks. This provides a unified interface for common commands (e.g., environment setup, running linters, cleaning data), improving developer productivity and ensuring command consistency.
-    * **Pre-commit Hooks**: Implemented a `pre-commit` framework to automate code quality checks. This ensures that every commit is automatically linted, formatted, and checked for type safety before entering the version control system.
+### 🛡 Code Quality, Security & Automation
+* **Workflow Automation**
+    * **Justfile (Just Task Runner)**: Implemented a `justfile` to orchestrate project tasks, providing a unified interface for commands like environment setup and linting.
+    * **Pre-commit Hooks**: Implemented a `pre-commit` framework to automate code quality checks before version control entry.
+
+* **Security & Dependency Analysis**
+    * **Mend (Mend Advisor)**: Integrated Mend to scan third-party dependencies for security vulnerabilities (SCA - Software Composition Analysis). Used Mend Advisor to proactively evaluate the health and security posture of open-source libraries before integration.
+    * **SonarQube for IDE**: Integrated SonarQube for real-time deep code analysis, identifying "Code Smells" and complex logic patterns.
 
 * **Static Analysis & Linting Ecosystem**
-    * **Ruff**: Integrated Ruff as an all-in-one, high-performance linter and formatter to enforce code style and catch potential bugs instantly.
-    * **Isort**: Utilized for automated import sorting, ensuring all module inclusions are organized and PEP 8 compliant.
-    * **Pylance**: Integrated as the core language server for advanced static analysis and intelligent auto-complete.
-    * **Pyright Configuration**: Implemented a `pyrightconfig.json` file to standardize type-checking rules across the project.
-    * **pandas-stubs**: Utilized to bring static typing to the Pandas library for stricter validation of DataFrame operations.
+    * **Ruff**: Integrated Ruff as a high-performance linter and formatter to enforce code style instantly.
+    * **Isort**: Utilized for automated import sorting to maintain PEP 8 compliance.
+    * **Pylance & Pyright**: Leveraged for advanced static analysis and strict type-checking via `pyrightconfig.json`.
+    * **pandas-stubs**: Utilized to bring static typing to the Pandas library for stricter validation.
 
 * **Advanced Structural Typing**
-    * **TypedDict**: Leveraged from the `typing` module to define explicit schemas for dictionaries, ensuring data consistency and a self-documenting codebase.
+    * **TypedDict**: Leveraged from the `typing` module to define explicit schemas for dictionaries, ensuring data consistency.
 
 ---
 *This file is updated as the project evolves.*
