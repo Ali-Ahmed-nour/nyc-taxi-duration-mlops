@@ -1,3 +1,5 @@
 from .model import TaxiTrip, Location
+from .factories import TaxiTripFactory
 
-__all__ = ["TaxiTrip", "Location"]
+# This defines what is accessible when someone imports from 'src.core.domain'
+__all__ = ["TaxiTrip", "Location", "TaxiTripFactory"]

@@ -26,6 +26,13 @@
     * **Justfile (Just Task Runner)**: Implemented a `justfile` to orchestrate project tasks, providing a unified interface for commands like environment setup and linting.
     * **Pre-commit Hooks**: Implemented a `pre-commit` framework to automate code quality checks before version control entry.
 
+* **Advanced Testing & Data Synthesis**
+    * **Property-Based Testing (Hypothesis)**: Implemented to automate edge-case discovery by generating diverse datasets to validate domain invariants.
+    * **Dynamic Factories (Factory Boy)**: Developed decoupled, reusable object blueprints for domain entities, replacing static fixtures.
+    * **Hybrid Testing Strategy**: Integrated `factory_boy` with `Hypothesis` via `st.builds()` for high-coverage validation of the domain layer.
+
+
+
 * **Security & Dependency Analysis**
     * **Mend (Mend Advisor)**: Integrated Mend to scan third-party dependencies for security vulnerabilities (SCA). Used Mend Advisor to evaluate the health of open-source libraries before integration.
     * **SonarQube for IDE**: Integrated SonarQube for real-time deep code analysis, identifying "Code Smells" and logic patterns.
