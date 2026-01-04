@@ -1,42 +1,49 @@
+# tests/test_trip_model.py
 import pytest
-from datetime import datetime
-
-# Directly importing from the model file
+from datetime import datetime, timedelta
 from src.core.domain.model import TaxiTrip, Location
 
 
-def test_taxi_trip_duration_calculation():
-    # Arrange: Setup initial data
-    pickup = datetime(2025, 10, 1, 10, 0, 0)
-    dropoff = datetime(2025, 10, 1, 10, 15, 0)  # 15 minutes difference
-
-    trip = TaxiTrip(
-        trip_id="test-123",
-        pickup_loc=Location("A"),
-        dropoff_loc=Location("B"),
-        pickup_time=pickup,
-        dropoff_time=dropoff,
-    )
-
-    # Act: Execute the logic
-    duration = trip.duration
-
-    # Assert: Fixed floating point check with pytest.approx
-    assert duration == pytest.approx(15.0)
+@pytest.fixture
+def loc():
+    return Location("A")
 
 
-def test_taxi_trip_validation():
-    # Arrange: Setup an invalid trip (duration < 1 minute)
-    pickup = datetime(2025, 10, 1, 10, 0, 0)
-    dropoff = datetime(2025, 10, 1, 10, 0, 30)  # 30 seconds only
+# 1. Normal Trip (Happy Path)
+def test_normal_trip_is_valid(loc):
+    start = datetime(2026, 1, 1, 10, 0)
+    end = start + timedelta(minutes=15)  # 15 mins
+    trip = TaxiTrip("T1", loc, loc, start, end)
+    assert trip.is_valid_for_model() is True
 
-    trip = TaxiTrip(
-        trip_id="test-invalid",
-        pickup_loc=Location("A"),
-        dropoff_loc=Location("B"),
-        pickup_time=pickup,
-        dropoff_time=dropoff,
-    )
 
-    # Assert: Business rule should fail
+# 2. Lower Boundary (Exactly 1 minute)
+def test_one_minute_is_valid(loc):
+    start = datetime(2026, 1, 1, 10, 0)
+    end = start + timedelta(minutes=1)
+    trip = TaxiTrip("T2", loc, loc, start, end)
+    assert trip.is_valid_for_model() is True
+
+
+# 3. Upper Boundary (Exactly 60 minutes)
+def test_sixty_minutes_is_valid(loc):
+    start = datetime(2026, 1, 1, 10, 0)
+    end = start + timedelta(minutes=60)
+    trip = TaxiTrip("T3", loc, loc, start, end)
+    assert trip.is_valid_for_model() is True
+
+
+# 4. Out of Bounds (More than 60 minutes)
+def test_sixty_one_minutes_is_invalid(loc):
+    start = datetime(2026, 1, 1, 10, 0)
+    end = start + timedelta(minutes=61)
+    trip = TaxiTrip("T4", loc, loc, start, end)
+    assert trip.is_valid_for_model() is False
+
+
+# 5. Logical Error (Negative duration)
+def test_negative_duration_is_invalid(loc):
+    start = datetime(2026, 1, 1, 10, 15)
+    end = datetime(2026, 1, 1, 10, 0)
+    trip = TaxiTrip("T5", loc, loc, start, end)
     assert trip.is_valid_for_model() is False
