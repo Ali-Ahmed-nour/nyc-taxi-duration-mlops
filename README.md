@@ -1,121 +1,127 @@
-# 🚕 NYC Taxi Duration Prediction: End-to-End MLOps Pipeline
+# 🚕 NYC Taxi Duration Prediction: Hexagonal MLOps Pipeline
 
-[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
-[![MLOps](https://img.shields.io/badge/MLOps-Engineering-orange.svg)](https://en.wikipedia.org/wiki/MLOps)
-[![Environment Management](https://img.shields.io/badge/Managed%20by-uv-purple.svg)](https://github.com/astral-sh/uv)
-[![Architecture](https://img.shields.io/badge/Design-Hexagonal-green.svg)](<https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)>)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Ali_Ahmed_Nour-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/ali-ahmed-nour/)
+[![WhatsApp & Call](https://img.shields.io/badge/WhatsApp_%26_Call-01007871314-green?style=flat&logo=whatsapp)](https://wa.me/201007871314)
+[![Call Only](https://img.shields.io/badge/Call_Only-01288061914-orange?style=flat&logo=phone)](tel:+201288061914)
 
-A production-ready MLOps project designed to predict taxi trip durations in NYC. This project transitions from research notebooks to a robust, cloud-agnostic pipeline, emphasizing **Software Architecture** and engineering excellence.
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/)
+[![Architecture](https://img.shields.io/badge/Design-Hexagonal-green.svg)](https://en.wikipedia.org/wiki/Hexagonal_architecture)
+[![Data Engine](https://img.shields.io/badge/Data-Polars-yellow.svg)](https://pola.rs/)
+[![Environment](https://img.shields.io/badge/Managed%20by-uv_project-purple.svg)](https://github.com/astral-sh/uv)
 
-## 🎯 Business Problem
+A production-ready MLOps project that predicts NYC taxi trip durations by transitioning from exploratory notebooks to a robust, cloud-agnostic pipeline—emphasizing **software architecture**, maintainability, and engineering rigor over ad-hoc scripting.
 
-Predicting trip duration is critical for urban mobility services. Accurate estimates improve user experience, optimize driver dispatching, and enhance fare estimation. This project builds a high-performance model to tackle this challenge using NYC Taxi & Limousine Commission (TLC) data.
+## 🎯 Business Problem & Technical Vision
 
-## 🏗️ Architecture & Engineering Principles
+Accurate trip duration prediction is essential for urban mobility platforms. It directly enhances:
 
-The project is built with a **"Production-First"** mindset, adhering to modern software design patterns:
+- Rider experience through reliable ETAs
+- Fleet dispatch efficiency
+- Dynamic pricing and fare estimation
 
-- **Hexagonal Architecture (Ports & Adapters):** Decouples core ML logic from external infrastructure.
-- **Single Source of Truth (SSoT):** A centralized configuration layer manages all paths, features, and model parameters.
-- **Memory Optimization:** Vectorized downcasting (e.g., `float32`) and efficient data handling to process millions of records.
-- **Type Safety & Quality:** Fully typed using Python's `dataclasses` and verified with **Pyright** and **Ruff**.
+This project uses public **NYC Taxi & Limousine Commission (TLC)** data to build a high-performance ML system grounded in **Domain-Driven Design** and **Hexagonal Architecture**. The core logic is completely decoupled from infrastructure concerns (e.g., storage, tracking), ensuring testability, portability, and long-term maintainability.
 
-______________________________________________________________________
+### 🧠 Core Domain Model
 
-## 🏛️ Detailed Technical Architecture
-
-> **🚧 Project Status:** Currently refactoring the codebase to strictly adhere to **Hexagonal Architecture** principles for better scalability and testability.
-
-### 🧩 Domain Model (The Core)
-
-At the heart of our "Hexagon" lies the Domain Model. These are pure Python entities that encapsulate the business rules of a taxi trip, independent of any data-frame library or storage engine. 
-
-> **Note:** For this initial phase, the model is kept minimal to focus on the end-to-end pipeline infrastructure.
+Pure, framework-agnostic Python entities encapsulate business rules:
 
 ```mermaid
 classDiagram
     direction LR
     class TaxiTrip {
-        +String trip_id
+        +str trip_id
         +Location pickup_loc
         +Location dropoff_loc
         +datetime pickup_time
         +datetime dropoff_time
-        +duration() float
-        +is_valid_for_model() bool
+        +duration() -> float
+        +is_valid_for_model() -> bool
     }
     class Location {
-        +String location_id
+        +str location_id
     }
-
     TaxiTrip "1" *-- "2" Location : involves
 ```
 
-### 🌉 Layers Responsibility
+## 🏗️ Architecture & Project Structure
 
-- **Domain Layer (`src/core/domain`):** Contains entities like `TaxiTrip`. It defines *what* a trip is and its validation rules (e.g., duration must be 1-60 mins).
-- **Adapter Layer (`src/adapters`):** Handles data I/O (e.g., reading Parquet files via Pandas). It maps raw data into Domain Entities and handles memory precision (`float32`).
-- **Application Layer (`src/core/services`):** Orchestrates the flow, calling adapters to fetch data and passing it to the core for training or inference.
-______________________________________________________________________
+### Engineering Principles
 
-## 📂 Project Structure
+- **Hexagonal Architecture**: Core ML logic is isolated from external systems (storage, MLflow, etc.).
+- **Infrastructure Agnostic**: The core logic doesn't care if data comes from a local Parquet file, an S3 bucket, or a SQL database. Similarly, it treats MLflow as just one possible implementation of a Tracking Port.
+- **High-Performance I/O**: Built on **Polars**—a Rust-based DataFrame library delivering 30–50× speedups over Pandas for Parquet workloads.
+- **Type Safety & Quality**: Enforced via **Pyright** (type checking) and **Ruff** (linting/formatting).
+- **Reproducibility**: Managed by **uv project**, a Rust-based Python toolchain that replaces `pip`, `poetry`, and `virtualenv`.
+
+### 📂 Directory Layout (Updated)
 
 ```text
 .
 ├── src/
 │   ├── core/
-│   │   ├── domain/        # Pure ML Logic & Entities (The Hexagon Center)
-│   │   └── services/      # Business Use Cases (Training/Inference Orchestration)
-│   ├── ports/             # Abstract Interfaces (StoragePort, TrackerPort)
-│   ├── adapters/          # Implementation details (GCS, Local, Parquet, MLflow)
-│   └── config.py          # Centralized SSoT Configuration
-├── notebooks/             # Exploratory Data Analysis & Research
-├── data/                  # Local data storage (Git ignored)
-├── models/                # Local model artifacts (Git ignored)
-├── justfile               # Workflow automation commands
-└── pyproject.toml         # Dependency management (uv)
+│   │   ├── domain/         # Pure entities (e.g., TaxiTrip) & Business Rules
+│   │   └── application/    
+│   │       ├── ports/      # Abstract interfaces (The contracts)
+│   │       └── use_cases/  # Business logic orchestration (Training, Inference)
+│   ├── infrastructure/     
+│   │   └── repositories/   # Concrete adapters (e.g., PolarsParquetRepo)
+│   └── config.py           # Single Source of Truth for settings
+├── notebooks/              # Exploratory Data Analysis (EDA)
+├── tests/                  # Unit & property-based tests (Pytest + FactoryBoy)
+├── pyproject.toml          # uv project-compatible project metadata
+└── .pre-commit-config.yaml # Automated quality gates
 ```
+
+### 🌉 Layers Responsibility (Refinement)
+
+- **Domain Layer (`src/core/domain`):** Defines the "What". Pure Python entities like `TaxiTrip` and their validation logic.
+- **Application Layer (`src/core/application`):** Defines the "How". Contains **Ports** (interfaces) and **Use Cases** that coordinate data flow without knowing about the technical source.
+- **Infrastructure Layer (`src/infrastructure`):** Defines the "With". Concrete implementations like reading Parquet via **Polars** or experiment tracking with **MLflow**.
 
 ## 🛠️ Tech Stack
 
-- **Environment:** `uv` (Fast Python package manager).
-- **Automation:** `Just` (Command runner).
-- **Core ML:** `Scikit-learn`, `XGBoost`, `Pandas`.
-- **Experiment Tracking:** `MLflow`.
-- **Static Analysis:** `Ruff`, `Pyright`.
+- **Environment & Package Management:** `uv project` (Rust-based toolchain).
+- **Data Engine:** `Polars` (High-performance DataFrame library).
+- **Quality Assurance:** `Ruff` (Linting), `Pyright` (Static Typing), `Pytest` (Testing).
+- **Domain Simulation:** `FactoryBoy` & `Hypothesis` (for robust testing).
+- **Experiment Tracking:** `MLflow` (Planned).
 
 ______________________________________________________________________
 
-## ⚙️ Configuration & Environment
+## ⚙️ Environment, Workflow & Getting Started
 
-The project uses a `.env` file to manage environment-specific settings. This ensures the code remains **Agnostic** to the infrastructure it runs on.
+### 🔧 Configuration via `.env`
 
 | Variable | Default | Description |
-| :--- | :--- | :--- |
-| `ENV` | `local` | Deployment environment (`local`, `dev`, `prod`). |
-| `DATA_PATH` | `./data` | Base directory for parquet files. |
-| `TRACKING_URI` | `http://localhost:5000` | MLflow server URI. |
-| `MODEL_REGISTRY` | `./models` | Path to save trained artifacts. |
+|-----------------|-----------------------|---------------------------------|
+| `ENV` | `local` | Environment (`local`, `dev`, `prod`) |
+| `DATA_PATH` | `./data` | Root path for Parquet datasets |
+| `TRACKING_URI` | `http://localhost:5000` | MLflow tracking server URI |
 
-______________________________________________________________________
+### 🔄 Development Workflow
 
-## 🛠️ Development Workflow
+1. **Research**: Prototype in `notebooks/`.
+1. **Refactor**: Move stable logic to `src/core/domain/`.
+1. **Implement Adapters**: Write infrastructure bindings in `src/infrastructure/`.
+1. **Validate**: All changes must pass `pre-commit` hooks.
 
-To maintain high engineering standards, the project follows a structured lifecycle:
-
-1. **Research:** Prototyping in `notebooks/` for EDA.
-1. **Refactor:** Porting stable logic into `src/core/domain/`.
-1. **Adapter Implementation:** Writing specific logic for data I/O in `src/adapters/`.
-1. **Quality Gate:** Running `just check` to ensure zero linting errors and type safety before committing.
-
-______________________________________________________________________
-
-## 🚀 Getting Started
-
-### 1. Prerequisites
-
-Ensure `uv` is installed:
+### 🚀 Quick Start
 
 ```bash
-curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
+# Install uv project (Rust-based Python toolchain)
+curl -LsSf https://astral.sh/uv project/install.sh | sh
+
+# Clone and set up
+git clone https://github.com/your-username/nyc-taxi-mlops-hexagon.git
+cd nyc-taxi-mlops-hexagon
+uv project sync
+
+# Run quality gates
+uv project run ruff check .
+uv project run pyright .
+uv project run pytest
 ```
+
+> [!IMPORTANT]\\
+>
+> > **Currently Under Construction**: I am actively building and refactoring this project to achieve full Hexagonal maturity. APIs and internal structures are evolving rapidly. Contributions and feedback are welcome!
