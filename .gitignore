@@ -219,3 +219,6 @@ mlflow.db
 mlruns/
 
 zoomcamb-prediction.ipynb
+
+
+.vscode/

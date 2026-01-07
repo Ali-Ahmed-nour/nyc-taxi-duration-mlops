@@ -1,5 +1,7 @@
 # 🚕 STIE: Sovereign Taxi Inference Engine
 
+### *The Sovereign Hexagonal Blueprint for Industrial ML*
+
 > **"Architecture is the art of planning for the unknown. We don't just build code; we build sovereign digital assets."**
 
 ______________________________________________________________________
@@ -17,7 +19,7 @@ ______________________________________________________________________
 
 ### 🎯 The Sovereign Thesis
 
-STIE is an engineered **Unified Inference Hub** designed for NYC Taxi operations. This platform represents an evolution from being "Agnostic" to being **Sovereign**.
+STIE is a Future-Proof engineered **Unified Inference Hub** designed for NYC Taxi operations. This platform represents an evolution from being "Agnostic" to being **Sovereign**.
 
 In this architecture, the **Business Logic is the Sovereign Power**. We treat the core of the project as a **Sovereign Sanctuary** (Domain Core) with zero external dependencies. All external tools—Google Cloud, BigQuery, and MLflow—are merely **"interchangeable gears" (تروس)** that can be swapped without touching the system's heart.
 
