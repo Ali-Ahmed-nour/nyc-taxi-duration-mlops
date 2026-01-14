@@ -1,7 +1,7 @@
 [project]
 name = "nyc-taxi-duration-mlops"
 version = "0.1.0"
-description = "Add your description here"
+description = "Sovereign Taxi Inference Engine - Hexagonal Architecture"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -10,28 +10,72 @@ dependencies = [
     "flask>=3.1.2",
     "hyperopt>=0.2.7",
     "mlflow>=3.8.1",
-    "pandas>=2.3.3",
-    "pandas-stubs>=2.3.3.251219",
-    "polars>=1.36.1",
+    "polars>=1.36.1", # محرك البيانات الأساسي
     "pyarrow>=22.0.0",
+    "pydantic-settings>=2.12.0",
+    "python-dotenv>=1.2.1",
     "scikit-learn>=1.8.0",
     "xgboost>=3.1.2",
+    # تم إزالة Pandas امتثالاً لبروتوكول المعماري (No Pandas)
 ]
 
 [dependency-groups]
 dev = [
     "factory-boy>=3.3.3",
     "hypothesis>=6.148.11",
+    "ipykernel>=7.1.0",
+    "jupyter>=1.1.1",
     "pre-commit>=4.5.1",
     "pyright>=1.1.407",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
+    "refurb>=2.2.0",
     "ruff>=0.14.10",
 ]
 
+# ------------------------------------------------------------------------------
+# RUFF: THE SOVEREIGN GUARDIAN CONFIGURATION
+# ------------------------------------------------------------------------------
+[tool.ruff]
+# Rationale: Excluding notebooks from strict linting to allow rapid research iterations.
+exclude = [
+    "notebooks/**",
+    "*.ipynb",
+]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+# Action: Comprehensive linting for quality, performance, and security.
+# Rationale: Multi-layered defense (S=Security, PLR=Refactor, PERF=Performance).
+select = [
+    "E",    # pycodestyle errors
+    "F",    # Pyflakes (Logic errors)
+    "UP",   # pyupgrade (Python 3.12+ syntax modernization)
+    "SIM",  # flake8-simplify (Code simplification)
+    "PERF", # Perflint (Performance anti-patterns)
+    "PLR",  # Pylint Refactor (Complexity control)
+    "B",    # flake8-bugbear (Common design flaws)
+    "S",    # flake8-bandit (The Security Guardian - Automated Security Audit)
+    "I",    # isort (Ensures standardized import sorting for architectural clarity)
+]
+
+# إجبار Ruff على عدم تجاهل أي شيء في الدومين
+[tool.ruff.lint.per-file-ignores]
+"src/core/domain/*" = ["D"] # تجاهل فقط الـ Docstring لو مش حابب تكتبه لكل سطر
+
+[tool.ruff.lint.pylint]
+max-branches = 5 # لو الـ if تجاوزت 5 فروع، Ruff سيعطيك خطأ فوراً
+
+# ------------------------------------------------------------------------------
+# PYRIGHT: STATIC TYPE SOVEREIGNTY
+# ------------------------------------------------------------------------------
+[tool.pyright]
+include = ["src"]
+typeCheckingMode = "strict" # الوضع الصارم لضمان الـ Immutability والـ Slots
+pythonVersion = "3.12"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-# This ensures that even with the 'src' layout, pytest finds your code
 addopts = "-ra -q"

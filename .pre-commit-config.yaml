@@ -1,4 +1,6 @@
 # Pre-commit configuration - Local Hooks (Optimized for Cloud & Resource Saving)
+# Rationale: Preventing pre-commit from scanning research sandbox to maintain industrial velocity.
+exclude: ^notebooks/|.*\.ipynb$
 repos:
   - repo: local
     hooks:
